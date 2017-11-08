@@ -7,8 +7,8 @@ events.on("push", function(e, project) => {
     "git clone " + project.repo.cloneUrl"
   ]
   var scan = new Job("scan", "owasp/dependency-check:latest", ["./bin/dependency-check.sh --project brigade-push-scan --out . --scan /mnt/brigade/share/target-app/"])
-  var slack = new Job("slack-notify", "technosophos/slack-notify:latest", ["/slack-notify"])
-  slack.env = {
+  var report = new Job("slack-notify", "technosophos/slack-notify:latest", ["/slack-notify"])
+  report.env = {
     SLACK_WEBHOOK: project.secrets.SLACK_WEBHOOK,
     SLACK_USERNAME: "DependencyCheckBot",
     SLACK_TITLE: "Vulnerable Dependency Identified in " + project.repo.name,
@@ -19,6 +19,6 @@ events.on("push", function(e, project) => {
   var runGroup = new Group()
   runGroup.add(clone)
   runGroup.add(scan)
-  runGroup.add(slack)
+  runGroup.add(report)
   runGroup.runAll()
 })
