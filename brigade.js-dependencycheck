@@ -6,7 +6,7 @@ events.on("push", function(e, project) => {
     "cd /mnt/brigade/share",
     "git clone " + project.repo.cloneUrl"
   ]
-  var scan = new Job("scan", "owasp/dependency-check:latest", ["./bin/dependency-check.sh --project brigade-push-scan --out . --scan /mnt/brigade/share/target-app/"])
+  var scan = new Job("scan", "owasp/dependency-check:latest", ["./bin/dependency-check.sh --project brigade-push-scan --out . --scan /mnt/brigade/share/" + project.repo.name])
   var report = new Job("slack-notify", "technosophos/slack-notify:latest", ["/slack-notify"])
   report.env = {
     SLACK_WEBHOOK: project.secrets.SLACK_WEBHOOK,
